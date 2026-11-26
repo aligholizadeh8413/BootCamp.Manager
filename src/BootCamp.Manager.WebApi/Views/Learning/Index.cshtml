@@ -1,0 +1,10 @@
+@model BootCamp.Manager.WebApi.Models.GreetingForm
+<!doctype html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تمرین MVC</title><link rel="stylesheet" href="/css/styles.css"></head>
+<body class="learning"><main class="learning-card"><h1>یک فرم، یک Controller، یک View</h1>
+<p>این مثال با HTML Form ارسال می‌شود. جاوااسکریپت لازم ندارد و در دیتابیس چیزی ذخیره نمی‌کند.</p>
+<form asp-controller="Learning" asp-action="Index" method="post">
+<label asp-for="Name">نام</label><input asp-for="Name" maxlength="60"><span asp-validation-for="Name"></span>
+<button class="primary" type="submit">ارسال فرم</button></form>
+@if (ViewBag.Message is not null) { <p role="status">@ViewBag.Message</p> }
+<a href="/">بازگشت به پنل</a></main></body></html>

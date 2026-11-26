@@ -1,0 +1,121 @@
+# VS Code REST Client — requests run in order, IDs captured from responses.
+# Email values must be unused. Run cleanup at the end before running again.
+@host = http://localhost:5083
+
+### Create instructor
+# @name createInstructor
+POST {{host}}/api/instructors
+Content-Type: application/json
+
+{"fullName":"مدرس تمرین","email":"http.teacher@example.com","expertise":"C#","isActive":true}
+
+### List instructors
+GET {{host}}/api/instructors
+
+### Read instructor
+GET {{host}}/api/instructors/{{createInstructor.response.body.$.id}}
+
+### Update instructor
+PUT {{host}}/api/instructors/{{createInstructor.response.body.$.id}}
+Content-Type: application/json
+
+{"fullName":"مدرس تمرین","email":"http.teacher@example.com","expertise":"ASP.NET Core","isActive":true}
+
+### Create student
+# @name createStudent
+POST {{host}}/api/students
+Content-Type: application/json
+
+{"fullName":"دانشجوی تمرین","email":"http.student@example.com","isActive":true}
+
+### List students
+GET {{host}}/api/students
+
+### Read student
+GET {{host}}/api/students/{{createStudent.response.body.$.id}}
+
+### Update student
+PUT {{host}}/api/students/{{createStudent.response.body.$.id}}
+Content-Type: application/json
+
+{"fullName":"دانشجوی ویرایش‌شده","email":"http.student@example.com","isActive":true}
+
+### Invalid student: expect 400
+POST {{host}}/api/students
+Content-Type: application/json
+
+{"fullName":"   ","email":"not-an-email","isActive":true}
+
+### Create session with a fixed roster
+# @name createSession
+POST {{host}}/api/sessions
+Content-Type: application/json
+
+{"title":"جلسه HTTP","date":"2026-11-26","instructorId":{{createInstructor.response.body.$.id}},"taskDescription":"ساخت CRUD","progressPercent":25,"isCompleted":true,"studentIds":[{{createStudent.response.body.$.id}}]}
+
+### List sessions
+GET {{host}}/api/sessions
+
+### Read session
+GET {{host}}/api/sessions/{{createSession.response.body.$.id}}
+
+### Edit session (roster is not part of this DTO)
+PUT {{host}}/api/sessions/{{createSession.response.body.$.id}}
+Content-Type: application/json
+
+{"title":"جلسه ویرایش‌شده","date":"2026-11-26","instructorId":{{createInstructor.response.body.$.id}},"taskDescription":"تکمیل اعتبارسنجی برای جلسه بعد","progressPercent":50,"isCompleted":true}
+
+### Read attendance
+GET {{host}}/api/sessions/{{createSession.response.body.$.id}}/attendance
+
+### Set complete attendance: expect 204 and 100% in the next session GET
+PUT {{host}}/api/sessions/{{createSession.response.body.$.id}}/attendance
+Content-Type: application/json
+
+{"items":[{"studentId":{{createStudent.response.body.$.id}},"status":"Present"}]}
+
+### Invalid attendance: expect 400, previous state retained
+PUT {{host}}/api/sessions/{{createSession.response.body.$.id}}/attendance
+Content-Type: application/json
+
+{"items":[]}
+
+### Create evaluation
+# @name createEvaluation
+POST {{host}}/api/evaluations
+Content-Type: application/json
+
+{"sessionId":{{createSession.response.body.$.id}},"studentId":{{createStudent.response.body.$.id}},"instructorId":{{createInstructor.response.body.$.id}},"score":85,"notes":"عملکرد خوب"}
+
+### List evaluations
+GET {{host}}/api/evaluations
+
+### Read evaluation
+GET {{host}}/api/evaluations/{{createEvaluation.response.body.$.id}}
+
+### Update evaluation
+PUT {{host}}/api/evaluations/{{createEvaluation.response.body.$.id}}
+Content-Type: application/json
+
+{"sessionId":{{createSession.response.body.$.id}},"studentId":{{createStudent.response.body.$.id}},"instructorId":{{createInstructor.response.body.$.id}},"score":95,"notes":"بهبود پس از بازخورد"}
+
+### Protected delete: expect 409 while session exists
+DELETE {{host}}/api/students/{{createStudent.response.body.$.id}}
+
+### Missing resource: expect 404
+GET {{host}}/api/sessions/2147483647
+
+### Cleanup: evaluation first
+DELETE {{host}}/api/evaluations/{{createEvaluation.response.body.$.id}}
+
+### Delete session and its roster
+DELETE {{host}}/api/sessions/{{createSession.response.body.$.id}}
+
+### Student can now be deleted
+DELETE {{host}}/api/students/{{createStudent.response.body.$.id}}
+
+### Instructor can now be deleted
+DELETE {{host}}/api/instructors/{{createInstructor.response.body.$.id}}
+
+### MVC form: open this URL in a browser to test POST with antiforgery token
+GET {{host}}/learning/mvc

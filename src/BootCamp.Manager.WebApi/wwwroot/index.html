@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#101010"><title>مدیریت بوت‌کمپ</title><link rel="icon" href="data:,"><link rel="stylesheet" href="css/styles.css"></head>
+<body>
+<div class="app-shell">
+<header class="navbar"><a class="brand" href="./"><span class="brand-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-5 9 5-9 5-9-5Zm3 2v6c4 3 8 3 12 0v-6M21 9v7"/></svg></span><strong>مدیریت بوت‌کمپ</strong></a>
+<nav aria-label="منوی اصلی"><button data-tab="sessions" class="active" aria-current="page">جلسه‌ها</button><button data-tab="students">دانشجویان</button><button data-tab="instructors">مدرسان</button><button data-tab="evaluations">ارزیابی</button></nav>
+<span class="profile"><span class="avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/></svg></span>پنل مدرس</span></header>
+<main>
+<section class="heading"><div><p id="mode" class="eyebrow">بوت‌کمپ توسعه بک‌اند / پنل آموزشی</p><h1 id="page-title">جلسه‌های بوت‌کمپ</h1><p id="subtitle" class="muted">مدیریت جلسات، حضور و غیاب و پیشرفت دوره در یک نگاه</p></div><button id="create" class="primary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span id="create-label">جلسه جدید</span></button></section>
+<section id="stats" class="stats" aria-label="آمار دوره"></section>
+<div class="section-bar"><div class="section-title"><h2 id="list-title">همه جلسه‌ها</h2><span id="total" class="muted"></span></div><div id="filters" class="segments" aria-label="فیلتر جلسات"><button data-filter="all" class="active" aria-pressed="true">همه</button><button data-filter="completed" aria-pressed="false">برگزارشده</button><button data-filter="upcoming" aria-pressed="false">آینده</button></div></div>
+<p id="page-error" role="alert" hidden></p><section id="content" class="content" aria-live="polite" aria-busy="true"></section>
+<footer class="pagination"><span id="page-description" class="muted"></span><div><button id="previous" aria-label="صفحه قبل">قبلی</button><span id="page-number">۱</span><button id="next" aria-label="صفحه بعد">بعدی</button><button id="reset-demo" hidden>بازنشانی دمو</button></div></footer>
+</main><div id="toast" role="status" hidden></div>
+</div>
+<dialog id="modal" aria-labelledby="modal-title"><div class="modal-header"><h2 id="modal-title"></h2><button id="close-modal" aria-label="بستن پنجره">×</button></div><div id="modal-content"></div></dialog>
+<script type="module" src="js/app.js"></script>
+</body></html>

@@ -1,60 +1,92 @@
 # BootCamp.Manager
 
-A simple instructor dashboard for managing bootcamp sessions, students, attendance, assignments, and student performance.
+پنل آموزشی مدرس برای تسک جلسه سوم بوت‌کمپ C#؛ رابط فارسی RTL، ASP.NET Core 10 با Controllers، EF Core 10 و SQLite.
 
-An educational project developed for Session 03 of a C# Backend Bootcamp, focused on ASP.NET Core Web API, Entity Framework Core, CRUD operations, and Clean Architecture.
+این پروژه مسیر تمرین قبلی [CSharp.CRUD.Practice](https://github.com/aligholizadeh8413/CSharp.CRUD.Practice) را از Console CRUD به HTTP ادامه می‌دهد. اسلایدهای `session3.pptx` مبنای سطح آموزشی هستند. چهار لایه کوچک داریم و خبری از React، TypeScript، MediatR، AutoMapper یا Docker نیست.
 
-## Features
+## شروع روی macOS
 
-- Student and instructor management
-- Session management
-- Attendance tracking
-- Session assignments
-- Automatic attendance percentage calculation
-- Student performance evaluation
-- Course progress tracking
-- Persian RTL dark-mode interface
+۱. از [صفحه رسمی .NET 10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) **SDK 10** را نصب کنید: برای Apple Silicon نسخه Arm64، برای مک Intel نسخه x64. Runtime به‌تنهایی کافی نیست. `global.json` اجازه استفاده از SDK پایدار 10.0 با feature band جدیدتر را می‌دهد؛ اگر فقط SDK 11 دارید، SDK 10 را کنار آن نصب کنید.
 
-## Tech Stack
+۲. ZIP را باز کنید و در Terminal وارد پوشه‌ای شوید که `BootCamp.Manager.sln` در آن است:
 
-| Technology | Purpose |
+```bash
+cd BootCamp.Manager
+dotnet --list-sdks
+dotnet tool restore
+dotnet restore --disable-parallel -p:BuildInParallel=false
+dotnet build -m:1
+```
+
+۳. Migration را اعمال و برنامه را اجرا کنید:
+
+```bash
+dotnet ef database update \
+  --project src/BootCamp.Manager.Infrastructure \
+  --startup-project src/BootCamp.Manager.WebApi \
+  --no-build
+
+dotnet run --no-build --project src/BootCamp.Manager.WebApi
+```
+
+پنل: **http://localhost:5083** — مثال MVC: **http://localhost:5083/learning/mvc**
+
+اولین اجرا دیتابیس خالی دارد. ابتدا مدرس و دانشجو اضافه کنید، سپس جلسه بسازید. برنامه هنگام شروع نیز `MigrateAsync` را اجرا می‌کند؛ بنابراین دستور `database update` برای مشاهده و تمرین فرایند است و اجرای دوباره‌اش مشکلی ندارد. این تصمیم برای تمرین محلی است.
+
+برای پر کردن دیتابیس خالی با نمونه‌های ساختگی، در ترمینال دوم (با Python 3 نصب‌شده) اجرا کنید:
+
+```bash
+python3 scripts/seed-demo.py
+```
+
+داده نمونه واقعاً با POST وارد SQLite می‌شود؛ با داده مرورگری `docs` متفاوت است. اسکریپت فقط وقتی تمام جدول‌های اصلی خالی باشند شروع می‌کند. برنامه به login نیاز ندارد و برای اجرای محلی این تمرین تنظیم شده است.
+
+## قابلیت‌ها و قواعد
+
+- CRUD دانشجو، مدرس، جلسه و ارزیابی؛ حضور و غیاب قابل ثبت و ویرایش.
+- تسک هر جلسه برای جلسه بعد و درصد پیشرفت درس ۰ تا ۱۰۰.
+- شرکت‌کنندگان هر جلسه هنگام ساخت انتخاب و ذخیره می‌شوند. افزودن یا غیرفعال کردن دانشجو، آمار جلسه قبلی را عوض نمی‌کند.
+- درصد حضور = حاضرها ÷ کل شرکت‌کنندگان همان جلسه × ۱۰۰. وضعیت ثبت‌نشده از حاضر جدا است؛ جلسه خالی `null` و در UI «—» نمایش می‌دهد.
+- ارزیابی ۰ تا ۱۰۰ با توضیحات و مدرس ارزیاب؛ حداکثر یک ارزیابی برای هر دانشجو در هر جلسه.
+- فرد دارای سابقه حذف نمی‌شود (`409`)؛ غیرفعالش کنید. جلسه با حذف، حضور و ارزیابی‌های خودش را هم حذف می‌کند.
+- فرم‌ها Modal؛ صفحه‌بندی کارت‌ها؛ فونت Rokh از فایل ارسالی؛ SVG؛ بدون ایموجی.
+- تاریخ در ورودی استاندارد مرورگر میلادی است؛ نمایش با `Intl` شمسی و فارسی است.
+
+## راهنمای مطالعه
+
+| فایل | محتوای آموزشی |
 |---|---|
-| C# / .NET 10 | Backend |
-| ASP.NET Core Web API | REST API |
-| Entity Framework Core | ORM |
-| SQLite | Database |
-| HTML & CSS | User interface |
-| Vanilla JavaScript | Frontend logic |
+| [معماری و دیاگرام‌ها](documentation/01-architecture.md) | ساختار پروژه، وابستگی لایه‌ها، ERD و Request Flow |
+| [آموزش قدم‌به‌قدم](documentation/02-learning-guide.md) | مسئولیت فایل‌ها، EF، DI، DTO، Controller و مقایسه با FastAPI |
+| [مرجع کامل API](documentation/03-api.md) | همه مسیرها، JSON و خطاها |
+| [Middleware، Filter و فرم‌ها](documentation/04-web-concepts.md) | تفاوت مفاهیم و مثال MVC قابل تست |
+| [اجرا و Migration](documentation/05-running.md) | macOS، SQL، GitHub Pages و عیب‌یابی |
+| [گزارش تست واقعی](documentation/06-test-report.md) | نتایج اجرا و محدودیت‌های تأیید |
+| [BootCamp.Manager.http](BootCamp.Manager.http) | توالی CRUD با HTTP Client |
+| [schema.sql](documentation/schema.sql) | SQL واقعی تولیدشده از Migration |
 
-## Architecture
+پیشنهاد مطالعه: `Student` → `StudentRequest` → `StudentsController` → `StudentService` → `StudentRepository` → `BootcampDbContext` → `Program.cs` → `wwwroot/js/data.js`.
 
-The project follows a simplified Clean Architecture:
+## تست مجدد
 
-- **Domain:** Entities and enums
-- **Application:** Services, DTOs, and interfaces
-- **Infrastructure:** EF Core, database, and repositories
-- **WebApi:** Controllers, middleware, filters, and static frontend
+```bash
+dotnet build -m:1
+python3 tests/smoke.py
+node tests/demo.mjs
+```
 
-## Learning Objectives
+تست Python سرور واقعی را روی یک پورت آزاد بالا می‌آورد، یک دیتابیس موقت می‌سازد، CRUD و restart را بررسی می‌کند و دیتابیس موقت را پاک می‌کند. Node فقط برای تست اختیاری JavaScript است؛ اجرای خود برنامه به Node یا npm نیاز ندارد.
 
-- REST API and CRUD operations
-- HTTP methods and status codes
-- Dependency Injection
-- Entity Framework Core and migrations
-- Controllers, DTOs, and routing
-- Middleware and Action Filters
-- Layered architecture
+## دموی GitHub Pages
 
-## Live Demo
+`docs/` یک نسخه مستقل است: درخواست `/api` نمی‌فرستد؛ داده ساختگی در `localStorage` همین مرورگر نگه‌داری می‌شود. بالای صفحه عبارت «به بک‌اند متصل نیست» دیده می‌شود. دکمه بازنشانی، داده نمونه را برمی‌گرداند.
 
-https://aligholizadeh8413.github.io/BootCamp.Manager/
+```bash
+python3 -m http.server 8080 --directory docs
+```
 
-The planned GitHub Pages demo is a static frontend preview using sample data. The backend and SQLite database run locally.
+سپس `http://localhost:8080` را باز کنید. فایل را با `file://` باز نکنید چون JavaScript module به HTTP نیاز دارد. برای انتشار: فایل‌ها را در [مخزن BootCamp.Manager](https://github.com/aligholizadeh8413/BootCamp.Manager) قرار دهید و در Settings → Pages، گزینه Deploy from a branch، شاخه `main` و پوشه `/docs` را انتخاب کنید. آماده بودن پوشه به معنی منتشر شدن Pages نیست؛ این بسته به مخزن push نشده است.
 
-## Previous Practice
+## تصمیم‌های ساده‌سازی
 
-https://github.com/aligholizadeh8413/CSharp.CRUD.Practice
-
-## Project Status
-
-Educational project — under development.
+Pagination در مرورگر انجام می‌شود؛ API فهرست کامل را می‌دهد. داده کمِ یک بوت‌کمپ هدف این تمرین است. Serviceها مستقیماً با DI ثبت شده‌اند، Repositoryها interface دارند؛ برای هر کلاس interface اضافی یا UnitOfWork جدا نساخته‌ایم چون DbContext همین نقش ذخیره‌سازی را دارد. فایل‌های Migration تولید EF هستند و عمداً از سورس حذف نشده‌اند.
