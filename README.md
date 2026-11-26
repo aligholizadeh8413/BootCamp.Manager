@@ -1,14 +1,14 @@
 # BootCamp.Manager
 
-پنل آموزشی مدرس برای تسک جلسه سوم بوت‌کمپ C#؛ رابط فارسی RTL، ASP.NET Core 10 با Controllers، EF Core 10 و SQLite.
+An instructor dashboard for the third C# Bootcamp session assignment, featuring a Persian RTL interface, ASP.NET Core 10 Controllers, EF Core 10, and SQLite.
 
-این پروژه مسیر تمرین قبلی [CSharp.CRUD.Practice](https://github.com/aligholizadeh8413/CSharp.CRUD.Practice) را از Console CRUD به HTTP ادامه می‌دهد. اسلایدهای `session3.pptx` مبنای سطح آموزشی هستند. چهار لایه کوچک داریم و خبری از React، TypeScript، MediatR، AutoMapper یا Docker نیست.
+This project continues the learning path from the previous [CSharp.CRUD.Practice](https://github.com/aligholizadeh8413/CSharp.CRUD.Practice) exercise, moving from Console CRUD to HTTP. The `session3.pptx` slides define the intended learning level. The project uses four small layers and deliberately avoids React, TypeScript, MediatR, AutoMapper, and Docker.
 
-## شروع روی macOS
+## Getting Started on macOS
 
-۱. از [صفحه رسمی .NET 10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) **SDK 10** را نصب کنید: برای Apple Silicon نسخه Arm64، برای مک Intel نسخه x64. Runtime به‌تنهایی کافی نیست. `global.json` اجازه استفاده از SDK پایدار 10.0 با feature band جدیدتر را می‌دهد؛ اگر فقط SDK 11 دارید، SDK 10 را کنار آن نصب کنید.
+1. Install **.NET 10 SDK** from the [official .NET 10 download page](https://dotnet.microsoft.com/en-us/download/dotnet/10.0): choose Arm64 for Apple Silicon or x64 for Intel Macs. The Runtime alone is not sufficient. `global.json` allows a stable 10.0 SDK with a newer feature band. If you only have SDK 11 installed, install SDK 10 alongside it.
 
-۲. ZIP را باز کنید و در Terminal وارد پوشه‌ای شوید که `BootCamp.Manager.sln` در آن است:
+2. Extract the ZIP archive and open Terminal in the directory containing `BootCamp.Manager.sln`:
 
 ```bash
 cd BootCamp.Manager
@@ -18,7 +18,7 @@ dotnet restore --disable-parallel -p:BuildInParallel=false
 dotnet build -m:1
 ```
 
-۳. Migration را اعمال و برنامه را اجرا کنید:
+3. Apply the migration and run the application:
 
 ```bash
 dotnet ef database update \
@@ -29,45 +29,45 @@ dotnet ef database update \
 dotnet run --no-build --project src/BootCamp.Manager.WebApi
 ```
 
-پنل: **http://localhost:5083** — مثال MVC: **http://localhost:5083/learning/mvc**
+Dashboard: **http://localhost:5083** — MVC example: **http://localhost:5083/learning/mvc**
 
-اولین اجرا دیتابیس خالی دارد. ابتدا مدرس و دانشجو اضافه کنید، سپس جلسه بسازید. برنامه هنگام شروع نیز `MigrateAsync` را اجرا می‌کند؛ بنابراین دستور `database update` برای مشاهده و تمرین فرایند است و اجرای دوباره‌اش مشکلی ندارد. این تصمیم برای تمرین محلی است.
+On the first run, the database is empty. Add an instructor and students first, then create a session. The application also runs `MigrateAsync` at startup, so the `database update` command is provided to demonstrate and practice the migration process; running it again is safe. This behavior is intended for local learning.
 
-برای پر کردن دیتابیس خالی با نمونه‌های ساختگی، در ترمینال دوم (با Python 3 نصب‌شده) اجرا کنید:
+To populate an empty database with sample records, run the following command in a second terminal (with Python 3 installed):
 
 ```bash
 python3 scripts/seed-demo.py
 ```
 
-داده نمونه واقعاً با POST وارد SQLite می‌شود؛ با داده مرورگری `docs` متفاوت است. اسکریپت فقط وقتی تمام جدول‌های اصلی خالی باشند شروع می‌کند. برنامه به login نیاز ندارد و برای اجرای محلی این تمرین تنظیم شده است.
+The sample data is inserted into SQLite through real POST requests; it is separate from the browser-based sample data in `docs/`. The script runs only when all main tables are empty. The application does not require login and is configured for this local exercise.
 
-## قابلیت‌ها و قواعد
+## Features and Rules
 
-- CRUD دانشجو، مدرس، جلسه و ارزیابی؛ حضور و غیاب قابل ثبت و ویرایش.
-- تسک هر جلسه برای جلسه بعد و درصد پیشرفت درس ۰ تا ۱۰۰.
-- شرکت‌کنندگان هر جلسه هنگام ساخت انتخاب و ذخیره می‌شوند. افزودن یا غیرفعال کردن دانشجو، آمار جلسه قبلی را عوض نمی‌کند.
-- درصد حضور = حاضرها ÷ کل شرکت‌کنندگان همان جلسه × ۱۰۰. وضعیت ثبت‌نشده از حاضر جدا است؛ جلسه خالی `null` و در UI «—» نمایش می‌دهد.
-- ارزیابی ۰ تا ۱۰۰ با توضیحات و مدرس ارزیاب؛ حداکثر یک ارزیابی برای هر دانشجو در هر جلسه.
-- فرد دارای سابقه حذف نمی‌شود (`409`)؛ غیرفعالش کنید. جلسه با حذف، حضور و ارزیابی‌های خودش را هم حذف می‌کند.
-- فرم‌ها Modal؛ صفحه‌بندی کارت‌ها؛ فونت Rokh از فایل ارسالی؛ SVG؛ بدون ایموجی.
-- تاریخ در ورودی استاندارد مرورگر میلادی است؛ نمایش با `Intl` شمسی و فارسی است.
+- Full CRUD for students, instructors, sessions, and evaluations; attendance can be recorded and updated.
+- Each session can have an assignment for the next session and a course progress value from 0 to 100.
+- Session participants are selected and saved when the session is created. Adding or deactivating a student does not change the statistics of previous sessions.
+- Attendance percentage = present students ÷ total participants in that session × 100. An unrecorded status is different from Present. An empty session returns `null` and is displayed as “—” in the UI.
+- Evaluations include a score from 0 to 100, comments, and the evaluating instructor. Each student can have at most one evaluation per session.
+- A person with historical records cannot be deleted (`409`); deactivate them instead. Deleting a session also deletes its attendance and evaluations.
+- Modal forms, card pagination, the supplied Rokh font, SVG icons, and no emojis.
+- Browser date inputs use the standard Gregorian format; dates are displayed in Persian using `Intl`.
 
-## راهنمای مطالعه
+## Learning Guide
 
-| فایل | محتوای آموزشی |
+| File | Learning content |
 |---|---|
-| [معماری و دیاگرام‌ها](documentation/01-architecture.md) | ساختار پروژه، وابستگی لایه‌ها، ERD و Request Flow |
-| [آموزش قدم‌به‌قدم](documentation/02-learning-guide.md) | مسئولیت فایل‌ها، EF، DI، DTO، Controller و مقایسه با FastAPI |
-| [مرجع کامل API](documentation/03-api.md) | همه مسیرها، JSON و خطاها |
-| [Middleware، Filter و فرم‌ها](documentation/04-web-concepts.md) | تفاوت مفاهیم و مثال MVC قابل تست |
-| [اجرا و Migration](documentation/05-running.md) | macOS، SQL، GitHub Pages و عیب‌یابی |
-| [گزارش تست واقعی](documentation/06-test-report.md) | نتایج اجرا و محدودیت‌های تأیید |
-| [BootCamp.Manager.http](BootCamp.Manager.http) | توالی CRUD با HTTP Client |
-| [schema.sql](documentation/schema.sql) | SQL واقعی تولیدشده از Migration |
+| [Architecture and diagrams](documentation/01-architecture.md) | Project structure, layer dependencies, ERD, and request flow |
+| [Step-by-step learning guide](documentation/02-learning-guide.md) | File responsibilities, EF, DI, DTOs, Controllers, and comparison with FastAPI |
+| [Complete API reference](documentation/03-api.md) | All endpoints, JSON payloads, and errors |
+| [Middleware, Filters, and Forms](documentation/04-web-concepts.md) | Conceptual differences and a testable MVC example |
+| [Running and migrations](documentation/05-running.md) | macOS, SQL, GitHub Pages, and troubleshooting |
+| [Actual test report](documentation/06-test-report.md) | Test results and verification limitations |
+| [BootCamp.Manager.http](BootCamp.Manager.http) | CRUD request sequence using an HTTP Client |
+| [schema.sql](documentation/schema.sql) | Actual SQL generated from the migration |
 
-پیشنهاد مطالعه: `Student` → `StudentRequest` → `StudentsController` → `StudentService` → `StudentRepository` → `BootcampDbContext` → `Program.cs` → `wwwroot/js/data.js`.
+Suggested reading order: `Student` → `StudentRequest` → `StudentsController` → `StudentService` → `StudentRepository` → `BootcampDbContext` → `Program.cs` → `wwwroot/js/data.js`.
 
-## تست مجدد
+## Run the Tests Again
 
 ```bash
 dotnet build -m:1
@@ -75,18 +75,20 @@ python3 tests/smoke.py
 node tests/demo.mjs
 ```
 
-تست Python سرور واقعی را روی یک پورت آزاد بالا می‌آورد، یک دیتابیس موقت می‌سازد، CRUD و restart را بررسی می‌کند و دیتابیس موقت را پاک می‌کند. Node فقط برای تست اختیاری JavaScript است؛ اجرای خود برنامه به Node یا npm نیاز ندارد.
+The Python test starts the real server on an available port, creates a temporary database, checks CRUD operations and restart persistence, and then deletes the temporary database. Node is only used for optional JavaScript tests; running the application itself does not require Node or npm.
 
-## دموی GitHub Pages
+## GitHub Pages Demo
 
-`docs/` یک نسخه مستقل است: درخواست `/api` نمی‌فرستد؛ داده ساختگی در `localStorage` همین مرورگر نگه‌داری می‌شود. بالای صفحه عبارت «به بک‌اند متصل نیست» دیده می‌شود. دکمه بازنشانی، داده نمونه را برمی‌گرداند.
+`docs/` is a standalone version. It does not send `/api` requests; sample data is stored in the current browser's `localStorage`. A notice at the top of the page indicates that the demo is not connected to the backend. The reset button restores the sample data.
 
 ```bash
 python3 -m http.server 8080 --directory docs
 ```
 
-سپس `http://localhost:8080` را باز کنید. فایل را با `file://` باز نکنید چون JavaScript module به HTTP نیاز دارد. برای انتشار: فایل‌ها را در [مخزن BootCamp.Manager](https://github.com/aligholizadeh8413/BootCamp.Manager) قرار دهید و در Settings → Pages، گزینه Deploy from a branch، شاخه `main` و پوشه `/docs` را انتخاب کنید. آماده بودن پوشه به معنی منتشر شدن Pages نیست؛ این بسته به مخزن push نشده است.
+Then open `http://localhost:8080`. Do not open the page using `file://`, because JavaScript modules require HTTP.
 
-## تصمیم‌های ساده‌سازی
+To publish the demo, push the files to the [BootCamp.Manager repository](https://github.com/aligholizadeh8413/BootCamp.Manager), then go to Settings → Pages. Select **Deploy from a branch**, choose the `main` branch, and set the folder to `/docs`. Having the folder ready does not mean GitHub Pages has been published; this project package has not been pushed to the repository yet.
 
-Pagination در مرورگر انجام می‌شود؛ API فهرست کامل را می‌دهد. داده کمِ یک بوت‌کمپ هدف این تمرین است. Serviceها مستقیماً با DI ثبت شده‌اند، Repositoryها interface دارند؛ برای هر کلاس interface اضافی یا UnitOfWork جدا نساخته‌ایم چون DbContext همین نقش ذخیره‌سازی را دارد. فایل‌های Migration تولید EF هستند و عمداً از سورس حذف نشده‌اند.
+## Simplification Decisions
+
+Pagination is handled in the browser; the API returns the full list. This exercise targets the relatively small amount of data expected in a bootcamp. Services are registered directly with DI, while repositories have interfaces. We have not created an additional interface for every class or a separate Unit of Work because `DbContext` already fulfills that persistence role. EF-generated migration files are intentionally kept in source control.
